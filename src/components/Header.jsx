@@ -1,84 +1,96 @@
-// src/components/Header.jsx
 import React from 'react';
-import { Search, ShoppingCart, Menu } from 'lucide-react';
+import { ShoppingCart, Menu, Wallet } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
-// Prop 'onOpenSidebar' allows the hamburger button to open the Sidebar
-const Header = ({ onOpenSidebar }) => {
+const Header = ({ onOpenSidebar, balance }) => {
     return (
         <nav className="navbar">
-            <div className="container-fluid nav-content">
+            {/* LEFT: Mobile Menu Trigger */}
+            <div className="nav-left">
+                <button className="menu-btn" onClick={onOpenSidebar}>
+                    <Menu size={24} color="#fff" />
+                </button>
+            </div>
 
-                {/* LOGO */}
+            {/* CENTER: The Big Logo */}
+            <div className="nav-center">
                 <Link to="/" className="logo">
-                    MARKET<span className="text-red">.</span>
+                    STMARKET<span className="blink">_</span>
                 </Link>
+            </div>
 
-                {/* SEARCH BAR */}
-                <div className="search-container">
-                    <div className="search-bar">
-                        <Search size={18} color="#666" />
-                        <input type="text" placeholder="Search assets..." />
+            {/* RIGHT: Actions */}
+            <div className="nav-right">
+                {/* Optional: Show Balance in Header if passed */}
+                {balance !== undefined && (
+                    <div className="balance-tag">
+                        <Wallet size={16} /> ${balance.toFixed(2)}
                     </div>
-                </div>
-
-                {/* ACTIONS */}
-                <div className="nav-actions">
-                    <button className="icon-btn"><ShoppingCart size={24} /></button>
-
-                    {/* Mobile Menu Button - Triggers Sidebar */}
-                    <button className="mobile-menu" onClick={onOpenSidebar}>
-                        <Menu size={24} />
-                    </button>
-                </div>
-
+                )}
+                <button className="icon-btn">
+                    <ShoppingCart size={24} />
+                </button>
             </div>
 
             <style jsx>{`
                 .navbar {
-                    height: 80px; /* matched to global CSS var if exists */
+                    height: 90px;
                     border-bottom: 1px solid #1a1a1a;
-                    background: rgba(0, 0, 0, 0.9);
-                    backdrop-filter: blur(20px);
+                    background: rgba(5, 5, 5, 0.95);
+                    backdrop-filter: blur(10px);
                     position: sticky; top: 0; z-index: 1000;
-                    display: flex; align-items: center; padding: 0 20px;
-                }
-
-                .nav-content {
                     display: grid;
-                    grid-template-columns: auto 1fr auto;
+                    grid-template-columns: 1fr auto 1fr; /* 3 Columns: Left, Center, Right */
                     align-items: center;
-                    width: 100%;
+                    padding: 0 30px;
                 }
 
+                .nav-left { display: flex; justify-content: flex-start; }
+                .nav-center { display: flex; justify-content: center; }
+                .nav-right { display: flex; justify-content: flex-end; align-items: center; gap: 20px; }
+
+                /* LOGO STYLES */
                 .logo {
-                    font-size: 28px; font-weight: 900; letter-spacing: -1px;
-                    color: white; margin-right: 40px; text-decoration: none;
+                    font-family: 'JetBrains Mono', monospace; /* Cool Tech Font */
+                    font-size: 42px; /* BIG */
+                    font-weight: 800;
+                    color: white;
+                    text-decoration: none;
+                    letter-spacing: -2px;
+                    text-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+                    transition: 0.3s;
                 }
-                .text-red { color: #ff2a2a; }
-
-                .search-container { display: flex; justify-content: center; }
-
-                .search-bar {
-                    background: #0f0f0f;
-                    border: 1px solid #222;
-                    padding: 10px 20px;
-                    display: flex; align-items: center; gap: 12px;
-                    width: 100%; max-width: 500px;
-                    border-radius: 8px;
+                .logo:hover {
+                    text-shadow: 0 0 30px rgba(255, 42, 42, 0.6);
+                    color: #fff;
                 }
-                .search-bar input {
-                    background: transparent; border: none; outline: none;
-                    color: white; width: 100%; font-size: 15px;
+                
+                .blink {
+                    color: #ff2a2a;
+                    animation: blinker 1s linear infinite;
                 }
+                @keyframes blinker { 50% { opacity: 0; } }
 
-                .nav-actions { display: flex; align-items: center; gap: 20px; }
-                .icon-btn { background: none; color: white; border: none; cursor: pointer; }
-                .mobile-menu { background: none; color: white; border: none; cursor: pointer; display: none; }
+                /* BUTTONS */
+                .menu-btn, .icon-btn {
+                    background: none; border: none; cursor: pointer;
+                    transition: transform 0.2s; padding: 0;
+                    color: white;
+                }
+                .menu-btn:hover, .icon-btn:hover { transform: scale(1.1); color: #ff2a2a; }
+
+                /* BALANCE TAG (Optional header display) */
+                .balance-tag {
+                    display: flex; align-items: center; gap: 8px;
+                    font-family: 'JetBrains Mono', monospace;
+                    color: #00ff88; font-size: 14px;
+                    background: rgba(0, 255, 136, 0.1);
+                    padding: 6px 12px; border-radius: 4px;
+                }
 
                 @media (max-width: 768px) {
-                    .search-container { display: none; }
-                    .mobile-menu { display: block; }
+                    .logo { font-size: 28px; } /* Smaller on mobile */
+                    .navbar { padding: 0 15px; height: 70px; }
                 }
             `}</style>
         </nav>

@@ -1,10 +1,9 @@
-// src/pages/Dashboard.jsx
 import React, { useState, useEffect } from "react";
-import { Search, Wallet } from 'lucide-react';
 import { collection, onSnapshot, query, doc } from "firebase/firestore";
 import { db } from "../firebaseConfig";
-import { useNavigate } from 'react-router-dom'; // <--- CRITICAL IMPORT
-import Sidebar from "../components/Sidebar";    // <--- IMPORT SIDEBAR COMPONENT
+import { useNavigate } from 'react-router-dom';
+import Sidebar from "../components/Sidebar";
+import Header from "../components/Header"; // <--- Import the new Header
 
 const Dashboard = ({ user }) => {
     const [balance, setBalance] = useState(0.00);
@@ -12,16 +11,14 @@ const Dashboard = ({ user }) => {
     const [isSidebarOpen, setSidebarOpen] = useState(false);
     const [view, setView] = useState('inventory');
 
-    const navigate = useNavigate(); // <--- INITIALIZE HOOK
+    const navigate = useNavigate();
 
     useEffect(() => {
         if (user) {
-            // 1. Balance Listener
             const unsubBalance = onSnapshot(doc(db, "users", user.uid), (doc) => {
                 if (doc.exists()) setBalance(doc.data().balance);
             });
 
-            // 2. Inventory Listener
             const q = query(collection(db, "users", user.uid, "orders"));
             const unsubOrders = onSnapshot(q, (snapshot) => {
                 setOrders(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
@@ -33,40 +30,35 @@ const Dashboard = ({ user }) => {
 
     return (
         <>
-            {/* Sidebar Component (Handles navigation & logout internally) */}
             <Sidebar isOpen={isSidebarOpen} onClose={() => setSidebarOpen(false)} />
 
-            {/* Header */}
-            <header className="header">
-                <div className="hamburger" onClick={() => setSidebarOpen(true)}>
-                    <span></span><span></span><span></span>
-                </div>
+            {/* NEW HEADER IMPLEMENTATION */}
+            <Header
+                onOpenSidebar={() => setSidebarOpen(true)}
+                balance={balance} // Pass balance to header if you want it there
+            />
 
-                <h1 className="logo">Star<span>Card</span></h1>
-
-                <div className="search-bar">
-                    <Search size={16} color="#666" />
-                    <input type="text" placeholder="Search inventory..." />
-                </div>
-
-                {/* --- CLICK EVENT FIXED HERE --- */}
-                <button
-                    className="wallet-btn"
-                    onClick={() => navigate('/wallet')}
-                >
-                    <Wallet size={16} style={{marginRight:'8px'}}/>
-                    <span>${balance?.toFixed(2)}</span>
-                </button>
-            </header>
-
-            {/* Main Content */}
             <main className="market">
+
+                {/* Optional: Add a "Add Funds" button prominently since search is gone */}
+                <div style={{gridColumn: '1/-1', display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:'20px'}}>
+                    <h2 style={{margin:0}}>My Secure Cards</h2>
+                    <button
+                        onClick={() => navigate('/wallet')}
+                        style={{
+                            background:'#ff2a2a', color:'white', border:'none',
+                            padding:'10px 20px', borderRadius:'4px', fontWeight:'bold', cursor:'pointer'
+                        }}
+                    >
+                        + Add Funds
+                    </button>
+                </div>
+
                 {view === 'inventory' && (
                     <>
-                        <h2 style={{gridColumn: '1/-1', marginBottom: '20px'}}>My Secure Cards</h2>
                         {orders.length === 0 ? (
                             <div style={{gridColumn: '1/-1', textAlign:'center', color:'#666', padding:'50px'}}>
-                                No cards in inventory. Add funds or purchase from market.
+                                No cards in inventory.
                             </div>
                         ) : (
                             orders.map((card) => (

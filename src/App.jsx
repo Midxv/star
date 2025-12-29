@@ -1,56 +1,74 @@
+// src/App.jsx
 import React, { useState, useEffect } from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate, useLocation } from "react-router-dom"; // Added useLocation
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./firebaseConfig";
 
-// Import Pages
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
-import Wallet from "./pages/Wallet"; // Make sure your Wallet file is in src/pages/Wallet.jsx
+import Wallet from "./pages/Wallet";
+import Processing from "./pages/Processing"; // <--- Import New Page
+import LoadingScreen from "./components/LoadingScreen"; // <--- Import Loader
 
 function App() {
     const [user, setUser] = useState(null);
-    const [loading, setLoading] = useState(true);
+    const [authLoading, setAuthLoading] = useState(true); // Initial Firebase check
+    const [pageLoading, setPageLoading] = useState(false); // Navigation loader
 
+    const location = useLocation();
+
+    // 1. Firebase Auth Check (Runs once)
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
             setUser(currentUser);
-            setLoading(false);
+            setAuthLoading(false);
         });
         return () => unsubscribe();
     }, []);
 
-    if (loading) return <div style={{height: '100vh', background: '#050505', color: '#fff', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>Loading Terminal...</div>;
+    // 2. Navigation Loader Trigger
+    useEffect(() => {
+        // Trigger loader on every route change (except initial load which authLoading handles)
+        setPageLoading(true);
+        const timer = setTimeout(() => {
+            setPageLoading(false);
+        }, 2000); // Loader stays for 2 seconds (Netflix style intro)
+
+        return () => clearTimeout(timer);
+    }, [location.pathname]); // Runs whenever URL path changes
+
+    if (authLoading) return <LoadingScreen />; // Show during initial auth check
 
     return (
-        <Routes>
-            {/* 1. If NOT logged in, show Login. If logged in, go to Dashboard */}
-            <Route
-                path="/login"
-                element={!user ? <Login /> : <Navigate to="/" />}
-            />
+        <>
+            {/* Show Loader on top if navigating */}
+            {pageLoading && <LoadingScreen />}
 
-            {/* 2. Protected Dashboard Route */}
-            <Route
-                path="/"
-                element={user ? <Dashboard user={user} /> : <Navigate to="/login" />}
-            />
+            <Routes>
+                <Route
+                    path="/login"
+                    element={!user ? <Login /> : <Navigate to="/" />}
+                />
 
-            {/* 3. Protected Wallet Route */}
-            <Route
-                path="/wallet"
-                element={user ? <Wallet /> : <Navigate to="/login" />}
-            />
+                <Route
+                    path="/"
+                    element={user ? <Dashboard user={user} /> : <Navigate to="/login" />}
+                />
 
-            {/* 4. Payment Process Route (Placeholder for future) */}
-            <Route
-                path="/payment-process"
-                element={user ? <div>Payment Process Page</div> : <Navigate to="/login" />}
-            />
+                <Route
+                    path="/wallet"
+                    element={user ? <Wallet /> : <Navigate to="/login" />}
+                />
 
-            {/* Catch all - Redirect to Home */}
-            <Route path="*" element={<Navigate to="/" />} />
-        </Routes>
+                {/* NEW PROCESSING ROUTE */}
+                <Route
+                    path="/payment-process"
+                    element={user ? <Processing /> : <Navigate to="/login" />}
+                />
+
+                <Route path="*" element={<Navigate to="/" />} />
+            </Routes>
+        </>
     );
 }
 
