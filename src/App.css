@@ -1,71 +1,130 @@
+/* src/App.css */
 :root {
-    /* THEME: AMOLED Dark & Vibrant Red */
-    --bg-body: #000000;       /* Pure Black */
-    --bg-card: #0a0a0a;       /* Almost Black */
-    --bg-card-hover: #121212; /* Slightly Lighter */
+    /* THEME: Soft Violet & White */
+    --bg-main: #f8f9ff;
+    --bg-card: #ffffff;
 
-    --primary: #FF3B30;       /* Professional Vibrant Red */
-    --primary-hover: #D72F26; /* Darker Red */
-    --primary-glow: rgba(255, 59, 48, 0.3);
+    --primary: #7c3aed;       /* Violet */
+    --primary-hover: #6d28d9;
 
-    --text-main: #FFFFFF;
-    --text-muted: #888888;
+    --text-main: #111827;     /* Pure Black/Gray */
+    --text-muted: #6b7280;    /* Soft Gray */
 
-    --border: #222222;
-    --border-hover: #FF3B30;
+    --border: #e5e7eb;
+    --radius: 16px;
 
-    --radius: 12px;
-    --nav-height: 80px;
+    --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    --shadow-hover: 0 20px 25px -5px rgba(124, 58, 237, 0.15), 0 10px 10px -5px rgba(124, 58, 237, 0.1);
 }
 
 body {
     margin: 0;
-    background-color: var(--bg-body);
+    background-color: var(--bg-main);
     color: var(--text-main);
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-family: 'Inter', system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
 }
 
 * { box-sizing: border-box; }
 a { text-decoration: none; color: inherit; }
-button { cursor: pointer; border: none; font-family: inherit; }
+button { cursor: pointer; font-family: inherit; }
 
-/* UTILITIES */
-.flex-center { display: flex; align-items: center; justify-content: center; }
-.container { max-width: 1400px; margin: 0 auto; padding: 0 24px; }
-
-/* TYPOGRAPHY */
-h1, h2, h3 { margin: 0; font-weight: 800; letter-spacing: -0.03em; }
-h1 { font-size: 64px; line-height: 1.1; }
-h2 { font-size: 32px; }
-.text-red { color: var(--primary); }
-
-/* BUTTONS */
-.btn-primary {
-    background: var(--primary);
-    color: white;
-    padding: 14px 32px;
-    border-radius: 50px;
-    font-weight: 700;
-    font-size: 16px;
-    transition: all 0.3s ease;
-    box-shadow: 0 0 20px var(--primary-glow);
-}
-.btn-primary:hover {
-    background: var(--primary-hover);
-    transform: translateY(-2px);
-    box-shadow: 0 0 30px var(--primary-glow);
+/* LAYOUT */
+.dashboard-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 20px;
 }
 
-.btn-ghost {
-    background: transparent;
-    color: var(--text-main);
-    padding: 12px 24px;
-    font-weight: 600;
-    transition: 0.2s;
-}
-.btn-ghost:hover { color: var(--primary); }
+/* HEADER SECTION */
+.hero-section { text-align: center; margin-bottom: 50px; position: relative; padding-top: 20px; }
+.top-nav { position: absolute; top: 20px; left: 0; }
 
-/* ANIMATIONS */
-.animate-fade-up { animation: fadeUp 0.6s ease-out forwards; opacity: 0; transform: translateY(20px); }
-@keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+.menu-btn {
+    background: white; border: 1px solid var(--border); padding: 10px;
+    border-radius: 12px; cursor: pointer; transition: 0.2s;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+}
+.menu-btn:hover { transform: scale(1.05); background: #f8f9ff; }
+
+.brand-title-dashboard {
+    font-size: 64px; font-weight: 900; letter-spacing: -3px;
+    margin-bottom: 40px; color: #1e1b4b;
+}
+
+/* BALANCE CARD */
+.balance-card {
+    background: white; padding: 40px 60px; border-radius: 30px;
+    box-shadow: var(--shadow-card); display: inline-flex; flex-direction: column;
+    align-items: center; border: 1px solid white; margin-bottom: 60px;
+    transition: 0.3s;
+}
+.balance-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-hover); }
+
+.balance-label {
+    font-size: 14px; font-weight: 700; color: var(--text-muted);
+    text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px;
+}
+.balance-value {
+    font-size: 64px; font-weight: 800; color: #000000; margin: 0 0 25px 0; line-height: 1;
+}
+
+.btn-add-funds {
+    background: var(--primary); color: white; border: none; padding: 14px 32px;
+    border-radius: 50px; font-size: 16px; font-weight: 600; cursor: pointer;
+    box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3); transition: transform 0.2s;
+    display: flex; align-items: center; gap: 8px;
+}
+.btn-add-funds:hover { transform: scale(1.05); background: var(--primary-hover); }
+
+/* PRODUCT GRID */
+.products-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px; margin-bottom: 80px; text-align: left;
+}
+
+.product-card {
+    background: white; border: 1px solid var(--border); border-radius: 24px;
+    padding: 30px; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex; flex-direction: column; gap: 15px; box-shadow: var(--shadow-card);
+}
+.product-card:hover {
+    transform: translateY(-10px) scale(1.02); box-shadow: var(--shadow-hover);
+    border-color: rgba(124, 58, 237, 0.2);
+}
+.product-card h3 { color: #111; font-size: 20px; margin: 0; font-weight: 700; }
+.product-card .desc { color: #666; font-size: 14px; line-height: 1.5; margin: 0; }
+.product-card .price-tag {
+    color: var(--primary); font-weight: 700; background: #f5f3ff;
+    padding: 6px 12px; border-radius: 20px; width: fit-content;
+}
+
+/* REVIEWS */
+.reviews-section { border-top: 1px solid #e5e7eb; padding-top: 60px; }
+.reviews-header {
+    display: flex; justify-content: center; align-items: center; gap: 10px;
+    margin-bottom: 40px; color: #111;
+}
+.reviews-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px; text-align: left;
+}
+.review-card-white {
+    background: white !important; border: 1px solid #e5e7eb; border-radius: 24px;
+    padding: 24px; box-shadow: var(--shadow-card); text-align: left;
+    transition: all 0.3s; cursor: default;
+}
+.review-text { color: #374151; font-size: 14px; line-height: 1.6; margin-bottom: 15px; }
+.review-user { color: #111; font-weight: 700; font-size: 12px; text-transform: uppercase; }
+
+/* UTILS */
+.icon-blue { color: #3b82f6; } .icon-red { color: #ef4444; }
+.icon-violet { color: #8b5cf6; } .icon-orange { color: #f97316; }
+.animate-pop { animation: popUp 0.5s cubic-bezier(0.18, 0.89, 0.32, 1.28); }
+@keyframes popUp { from { opacity:0; transform: scale(0.8); } to { opacity:1; transform: scale(1); }}
+
+@media (max-width: 768px) {
+    .brand-title-dashboard { font-size: 42px; }
+    .balance-value { font-size: 48px; }
+    .balance-card { width: 100%; padding: 30px; }
+}
