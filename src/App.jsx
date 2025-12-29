@@ -7,7 +7,8 @@ import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Wallet from "./pages/Wallet";
 import Processing from "./pages/Processing";
-import Cart from "./pages/Cart"; // <--- IMPORT CART
+import Cart from "./pages/Cart";
+import Assets from "./pages/Assets"; // <--- IMPORT NEW ASSETS PAGE
 import LoadingScreen from "./components/LoadingScreen";
 
 function App() {
@@ -26,7 +27,7 @@ function App() {
 
     useEffect(() => {
         setPageLoading(true);
-        const timer = setTimeout(() => { setPageLoading(false); }, 2000);
+        const timer = setTimeout(() => { setPageLoading(false); }, 1500);
         return () => clearTimeout(timer);
     }, [location.pathname]);
 
@@ -40,9 +41,10 @@ function App() {
                 <Route path="/" element={user ? <Dashboard user={user} /> : <Navigate to="/login" />} />
                 <Route path="/wallet" element={user ? <Wallet /> : <Navigate to="/login" />} />
                 <Route path="/payment-process" element={user ? <Processing /> : <Navigate to="/login" />} />
-
-                {/* NEW CART ROUTE */}
                 <Route path="/cart" element={user ? <Cart /> : <Navigate to="/login" />} />
+
+                {/* NEW ASSETS ROUTE */}
+                <Route path="/assets" element={user ? <Assets /> : <Navigate to="/login" />} />
 
                 <Route path="*" element={<Navigate to="/" />} />
             </Routes>
