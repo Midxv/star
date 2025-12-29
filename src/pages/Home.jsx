@@ -53,7 +53,7 @@ const Home = () => {
 
                     <button
                         className="btn-add-funds"
-                        onClick={() => navigate('/add-funds')}
+                        onClick={() => navigate('/wallet')}
                     >
                         <Plus size={18} strokeWidth={3} /> Add Funds
                     </button>
