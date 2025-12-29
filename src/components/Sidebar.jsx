@@ -76,7 +76,7 @@ const Sidebar = ({ isOpen, onClose }) => {
                     backdrop-filter: blur(2px);
                 }
                 .sidebar-overlay.active { opacity: 1; pointer-events: all; }
-                
+
                 .sidebar-nav { display: flex; flex-direction: column; gap: 5px; }
 
                 .close-btn {
@@ -84,7 +84,7 @@ const Sidebar = ({ isOpen, onClose }) => {
                     background: none; border: none; color: #666; cursor: pointer;
                     display: none;
                 }
-                
+
                 @media (max-width: 768px) {
                     .close-btn { display: block; }
                 }

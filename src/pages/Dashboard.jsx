@@ -1,48 +1,44 @@
-import { useState, useEffect } from "react";
-import { Search, LogOut, Wallet } from 'lucide-react'; // Removed CreditCard import if unused
-import { signOut } from "firebase/auth";
-import { doc, collection, onSnapshot, query } from "firebase/firestore";
-import { auth, db } from "../firebaseConfig";
-import { useNavigate } from 'react-router-dom'; // <--- 1. Import Hook
+// src/pages/Dashboard.jsx
+import React, { useState, useEffect } from "react";
+import { Search, Wallet } from 'lucide-react';
+import { collection, onSnapshot, query, doc } from "firebase/firestore";
+import { db } from "../firebaseConfig";
+import { useNavigate } from 'react-router-dom'; // <--- CRITICAL IMPORT
+import Sidebar from "../components/Sidebar";    // <--- IMPORT SIDEBAR COMPONENT
 
-function Dashboard({ user }) { // <--- 2. Receive user as prop (handled by App router now)
+const Dashboard = ({ user }) => {
     const [balance, setBalance] = useState(0.00);
     const [orders, setOrders] = useState([]);
-    const [open, setOpen] = useState(false);
+    const [isSidebarOpen, setSidebarOpen] = useState(false);
     const [view, setView] = useState('inventory');
 
-    const navigate = useNavigate(); // <--- 3. Initialize Hook
+    const navigate = useNavigate(); // <--- INITIALIZE HOOK
 
     useEffect(() => {
         if (user) {
-            // Balance Listener
-            const userRef = doc(db, "users", user.uid);
-            const unsubBalance = onSnapshot(userRef, (doc) => {
+            // 1. Balance Listener
+            const unsubBalance = onSnapshot(doc(db, "users", user.uid), (doc) => {
                 if (doc.exists()) setBalance(doc.data().balance);
             });
 
-            // Inventory Listener
-            const ordersRef = collection(db, "users", user.uid, "orders");
-            const q = query(ordersRef);
+            // 2. Inventory Listener
+            const q = query(collection(db, "users", user.uid, "orders"));
             const unsubOrders = onSnapshot(q, (snapshot) => {
-                const items = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                setOrders(items);
+                setOrders(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
             });
 
-            return () => {
-                unsubBalance();
-                unsubOrders();
-            };
+            return () => { unsubBalance(); unsubOrders(); };
         }
     }, [user]);
 
-    const handleLogout = () => signOut(auth);
-
     return (
         <>
+            {/* Sidebar Component (Handles navigation & logout internally) */}
+            <Sidebar isOpen={isSidebarOpen} onClose={() => setSidebarOpen(false)} />
+
             {/* Header */}
             <header className="header">
-                <div className="hamburger" onClick={() => setOpen(!open)}>
+                <div className="hamburger" onClick={() => setSidebarOpen(true)}>
                     <span></span><span></span><span></span>
                 </div>
 
@@ -53,7 +49,7 @@ function Dashboard({ user }) { // <--- 2. Receive user as prop (handled by App r
                     <input type="text" placeholder="Search inventory..." />
                 </div>
 
-                {/* --- 4. THE CONNECTION IS HERE --- */}
+                {/* --- CLICK EVENT FIXED HERE --- */}
                 <button
                     className="wallet-btn"
                     onClick={() => navigate('/wallet')}
@@ -62,20 +58,6 @@ function Dashboard({ user }) { // <--- 2. Receive user as prop (handled by App r
                     <span>${balance?.toFixed(2)}</span>
                 </button>
             </header>
-
-            {/* Sidebar */}
-            <aside className={`sidebar ${open ? "open" : ""}`}>
-                <div className="user-info">
-                    <div className="status-dot"></div>
-                    <span>{user?.email?.split('@')[0]}</span>
-                </div>
-                <button className={`side-btn ${view === 'inventory' ? 'active' : ''}`} onClick={() => setView('inventory')}>My Inventory</button>
-                <button className={`side-btn ${view === 'market' ? 'active' : ''}`} onClick={() => setView('market')}>Marketplace</button>
-                <div className="divider"></div>
-                <button className="side-btn logout" onClick={handleLogout}>
-                    <LogOut size={16} style={{marginRight:'8px'}}/> Disconnect
-                </button>
-            </aside>
 
             {/* Main Content */}
             <main className="market">
@@ -112,6 +94,7 @@ function Dashboard({ user }) { // <--- 2. Receive user as prop (handled by App r
                         )}
                     </>
                 )}
+
                 {view === 'market' && (
                     <div style={{gridColumn: '1/-1', textAlign:'center', color:'#444', marginTop:'50px'}}>
                         <h2>Marketplace Offline</h2>
