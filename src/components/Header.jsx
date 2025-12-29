@@ -5,6 +5,9 @@ import { Link, useNavigate } from 'react-router-dom';
 const Header = ({ onOpenSidebar, balance }) => {
     const navigate = useNavigate();
 
+    // Keep the cart count logic so the badge still works
+    const cartCount = JSON.parse(localStorage.getItem('myCart') || '[]').length;
+
     return (
         <nav className="navbar">
             {/* LEFT: Mobile Menu Trigger */}
@@ -14,7 +17,7 @@ const Header = ({ onOpenSidebar, balance }) => {
                 </button>
             </div>
 
-            {/* CENTER: Logo */}
+            {/* CENTER: Original Big Text Logo */}
             <div className="nav-center">
                 <Link to="/" className="logo">
                     STMARKET<span className="blink">_</span>
@@ -23,7 +26,6 @@ const Header = ({ onOpenSidebar, balance }) => {
 
             {/* RIGHT: Actions */}
             <div className="nav-right">
-                {/* 1. PILL SHAPED WALLET BUTTON (Clickable) */}
                 {balance !== undefined && (
                     <button
                         className="balance-pill"
@@ -34,10 +36,9 @@ const Header = ({ onOpenSidebar, balance }) => {
                     </button>
                 )}
 
-                {/* 2. CART BUTTON */}
                 <button className="icon-btn" onClick={() => navigate('/cart')}>
                     <ShoppingCart size={24} />
-                    <span className="cart-badge">3</span>
+                    {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
                 </button>
             </div>
 
@@ -58,16 +59,26 @@ const Header = ({ onOpenSidebar, balance }) => {
                 .nav-center { display: flex; justify-content: center; }
                 .nav-right { display: flex; justify-content: flex-end; align-items: center; gap: 20px; }
 
+                /* RESTORED: Original Big Text Logo Style */
                 .logo {
                     font-family: 'JetBrains Mono', monospace;
-                    font-size: 32px; font-weight: 800; color: white;
-                    text-decoration: none; letter-spacing: -2px;
+                    font-size: 32px;
+                    font-weight: 800;
+                    color: white;
+                    text-decoration: none;
+                    letter-spacing: -2px;
                     text-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+                    transition: 0.3s;
                 }
+                .logo:hover {
+                    text-shadow: 0 0 30px rgba(255, 42, 42, 0.6);
+                    color: #fff;
+                }
+
                 .blink { color: #ff2a2a; animation: blinker 1s linear infinite; }
                 @keyframes blinker { 50% { opacity: 0; } }
 
-                /* PILL SHAPE WALLET BTN */
+                /* Wallet Pill Button */
                 .balance-pill {
                     display: flex; align-items: center; gap: 8px;
                     font-family: 'JetBrains Mono', monospace;
@@ -101,7 +112,7 @@ const Header = ({ onOpenSidebar, balance }) => {
                 @media (max-width: 768px) {
                     .navbar { padding: 0 15px; height: 70px; }
                     .logo { font-size: 24px; }
-                    .balance-pill span { display: none; } /* Hide text on small mobile */
+                    .balance-pill span { display: none; }
                 }
             `}</style>
         </nav>
