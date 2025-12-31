@@ -218,7 +218,7 @@ const Cart = () => {
                             <div className="total-pill-card">
                                 <div className="subtotal-row">
                                     <span>Total</span>
-                                    <span className="big-price">${total.toFixed(2)}</span>
+                                    <span className="big-price">€{total.toFixed(2)}</span>
                                 </div>
 
                                 <button
