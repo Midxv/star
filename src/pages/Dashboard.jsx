@@ -9,18 +9,18 @@ import { useNavigate } from 'react-router-dom';
 
 // Initial Static Data for Live Cards (Authentic BINs, No Debit)
 const initialLiveCards = [
-    { id: 1, brand: 'VISA', type: 'PLATINUM', country: 'USA', bin: '400022' },
-    { id: 2, brand: 'MASTERCARD', type: 'WORLD', country: 'UK', bin: '550000' },
+    { id: 1, brand: 'VISA', type: 'PLATINUM', country: 'USA', bin: '400622' },
+    { id: 2, brand: 'MASTERCARD', type: 'WORLD', country: 'UK', bin: '530408' },
     { id: 3, brand: 'VISA', type: 'SIGNATURE', country: 'FRANCE', bin: '497010' },
-    { id: 4, brand: 'MASTERCARD', type: 'GOLD', country: 'GERMANY', bin: '510000' },
+    { id: 4, brand: 'MASTERCARD', type: 'GOLD', country: 'GERMANY', bin: '510900' },
     { id: 5, brand: 'VISA', type: 'BUSINESS', country: 'USA', bin: '403600' },
-    { id: 6, brand: 'MASTERCARD', type: 'STANDARD', country: 'ITALY', bin: '535500' },
+    { id: 6, brand: 'MASTERCARD', type: 'STANDARD', country: 'ITALY', bin: '539500' },
     { id: 7, brand: 'VISA', type: 'INFINITE', country: 'USA', bin: '448500' },
-    { id: 8, brand: 'MASTERCARD', type: 'WORLD ELITE', country: 'NETHERLANDS', bin: '522200' },
+    { id: 8, brand: 'MASTERCARD', type: 'WORLD ELITE', country: 'NETHERLANDS', bin: '526290' },
     { id: 9, brand: 'VISA', type: 'PLATINUM', country: 'SPAIN', bin: '491600' },
     { id: 10, brand: 'VISA', type: 'CREDIT', country: 'USA', bin: '414720' },
-    { id: 11, brand: 'MASTERCARD', type: 'PLATINUM', country: 'SWEDEN', bin: '557700' },
-    { id: 12, brand: 'VISA', type: 'CLASSIC', country: 'POLAND', bin: '450000' },
+    { id: 11, brand: 'MASTERCARD', type: 'PLATINUM', country: 'SWEDEN', bin: '557760' },
+    { id: 12, brand: 'VISA', type: 'CLASSIC', country: 'POLAND', bin: '450970' },
     { id: 13, brand: 'MASTERCARD', type: 'TITANIUM', country: 'USA', bin: '546600' },
 ];
 
