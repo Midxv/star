@@ -1,4 +1,3 @@
-// src/pages/Dashboard.jsx
 import React, { useState, useEffect } from "react";
 import { onSnapshot, doc } from "firebase/firestore";
 import { db, auth } from "../firebaseConfig";
@@ -7,36 +6,16 @@ import Header from "../components/Header";
 import { Shield, Globe, CreditCard, Hash, Check, XCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
-// Helper to generate data within specific constraints
-const generateData = (count, status) => {
-    const brands = ['VISA', 'MASTERCARD']; // Only Visa & Master
-    const types = ['PLATINUM', 'GOLD', 'BUSINESS', 'SIGNATURE', 'INFINITE', 'WORLD'];
-    const countries = ['USA', 'UK', 'DE', 'JP', 'CA', 'FR'];
-
-    return Array.from({ length: count }).map((_, i) => ({
-        id: status === 'live' ? `live-${i}` : `oos-${i}`,
-        brand: brands[Math.floor(Math.random() * brands.length)],
-        type: types[Math.floor(Math.random() * types.length)],
-        country: countries[Math.floor(Math.random() * countries.length)],
-        bin: Math.floor(400000 + Math.random() * 199999),
-        // Random price between 1.47 and 2.13
-        price: (Math.random() * (2.13 - 1.47) + 1.47).toFixed(2),
-        qty: 1,
-        status: status
-    }));
-};
-
 const Dashboard = () => {
     const navigate = useNavigate();
     const [balance, setBalance] = useState(0.00);
     const [isSidebarOpen, setSidebarOpen] = useState(false);
     const [addedItemId, setAddedItemId] = useState(null);
 
-    // 13 Live Items, 7 Out of Stock Items
-    const [liveItems] = useState(generateData(13, 'live'));
-    const [oosItems] = useState(generateData(7, 'oos'));
+    // Dynamic Pricing State
+    const [dynamicPrice, setDynamicPrice] = useState("1.85");
 
-    // Real-time Balance
+    // --- 1. REAL-TIME BALANCE ---
     useEffect(() => {
         if (auth.currentUser) {
             const unsubBalance = onSnapshot(doc(db, "users", auth.currentUser.uid), (doc) => {
@@ -46,15 +25,33 @@ const Dashboard = () => {
         }
     }, []);
 
-    // Add to Cart & Redirect
+    // --- 2. DYNAMIC PRICING (Updates every 15 mins) ---
+    useEffect(() => {
+        const updatePrice = () => {
+            // Random price between 1.47 and 2.13
+            const price = (Math.random() * (2.13 - 1.47) + 1.47).toFixed(2);
+            setDynamicPrice(price);
+        };
+
+        updatePrice(); // Run on mount
+        const interval = setInterval(updatePrice, 15 * 60 * 1000);
+        return () => clearInterval(interval);
+    }, []);
+
+    // --- 3. ADD TO CART LOGIC (Redirects to Cart) ---
     const addToCart = (item) => {
+        // Create a cart item with the current dynamic price
+        const itemToAdd = { ...item, price: dynamicPrice };
+
         const currentCart = JSON.parse(localStorage.getItem('myCart') || '[]');
         const existingItem = currentCart.find(cartItem => cartItem.id === item.id);
 
         if (existingItem) {
             existingItem.qty += 1;
+            // Update price to current live price
+            existingItem.price = dynamicPrice;
         } else {
-            currentCart.push({ ...item, qty: 1 });
+            currentCart.push({ ...itemToAdd, qty: 1 });
         }
 
         localStorage.setItem('myCart', JSON.stringify(currentCart));
@@ -62,12 +59,40 @@ const Dashboard = () => {
 
         setAddedItemId(item.id);
 
-        // Redirect to Cart after short delay for visual feedback
+        // Redirect to Cart after short delay
         setTimeout(() => {
             setAddedItemId(null);
             navigate('/cart');
         }, 500);
     };
+
+    // --- LIVE CARDS (13 Items - Visa/Master Only) ---
+    const liveCards = [
+        { id: 1, brand: 'VISA', type: 'PLATINUM', country: 'USA', bin: '414720' },
+        { id: 2, brand: 'MASTERCARD', type: 'WORLD', country: 'UK', bin: '510510' },
+        { id: 3, brand: 'VISA', type: 'SIGNATURE', country: 'FRANCE', bin: '453201' },
+        { id: 4, brand: 'MASTERCARD', type: 'GOLD', country: 'GERMANY', bin: '542418' },
+        { id: 5, brand: 'VISA', type: 'BUSINESS', country: 'USA', bin: '491600' },
+        { id: 6, brand: 'MASTERCARD', type: 'STANDARD', country: 'ITALY', bin: '520000' },
+        { id: 7, brand: 'VISA', type: 'INFINITE', country: 'USA', bin: '400022' },
+        { id: 8, brand: 'MASTERCARD', type: 'WORLD ELITE', country: 'NETHERLANDS', bin: '535310' },
+        { id: 9, brand: 'VISA', type: 'DEBIT', country: 'SPAIN', bin: '455622' },
+        { id: 10, brand: 'VISA', type: 'CREDIT', country: 'USA', bin: '414740' },
+        { id: 11, brand: 'MASTERCARD', type: 'PLATINUM', country: 'SWEDEN', bin: '552233' },
+        { id: 12, brand: 'VISA', type: 'CLASSIC', country: 'POLAND', bin: '402400' },
+        { id: 13, brand: 'MASTERCARD', type: 'TITANIUM', country: 'USA', bin: '512120' },
+    ];
+
+    // --- OUT OF STOCK CARDS (7 Items - Amex/Discover Only) ---
+    const outOfStockCards = [
+        { id: 101, brand: 'AMEX', type: 'CENTURION', country: 'USA', bin: '371288' },
+        { id: 102, brand: 'DISCOVER', type: 'CREDIT', country: 'USA', bin: '601100' },
+        { id: 103, brand: 'AMEX', type: 'GOLD', country: 'UK', bin: '374210' },
+        { id: 104, brand: 'DISCOVER', type: 'DEBIT', country: 'USA', bin: '601120' },
+        { id: 105, brand: 'AMEX', type: 'PLATINUM', country: 'FRANCE', bin: '379000' },
+        { id: 106, brand: 'DISCOVER', type: 'BUSINESS', country: 'USA', bin: '650000' },
+        { id: 107, brand: 'AMEX', type: 'BLUE', country: 'GERMANY', bin: '375000' },
+    ];
 
     return (
         <>
@@ -94,7 +119,7 @@ const Dashboard = () => {
                         </tr>
                         </thead>
                         <tbody>
-                        {liveItems.map((item) => (
+                        {liveCards.map((item) => (
                             <tr key={item.id} className="row-pill">
                                 <td className={`brand ${item.brand.toLowerCase()}`}>{item.brand}</td>
                                 <td>
@@ -102,7 +127,7 @@ const Dashboard = () => {
                                 </td>
                                 <td>{item.country}</td>
                                 <td className="mono">{item.bin}</td>
-                                <td className="price">${item.price}</td>
+                                <td className="price">${dynamicPrice}</td>
                                 <td>
                                     <button
                                         className={`buy-pill-btn glow-green ${addedItemId === item.id ? 'added' : ''}`}
@@ -132,7 +157,7 @@ const Dashboard = () => {
                         </tr>
                         </thead>
                         <tbody>
-                        {oosItems.map((item) => (
+                        {outOfStockCards.map((item) => (
                             <tr key={item.id} className="row-pill disabled">
                                 <td className={`brand ${item.brand.toLowerCase()}`}>{item.brand}</td>
                                 <td><span className="type-pill">{item.type}</span></td>
@@ -156,22 +181,22 @@ const Dashboard = () => {
             <footer className="footer">
                 <div className="footer-content">
                     <div className="footer-left">
-                        <h3>Star<span>Card</span></h3>
+                        <h3>STMARKET.</h3>
                         <p>The premium marketplace for verified digital assets.</p>
-                        <p className="copy">&copy; {new Date().getFullYear()} StarCard Inc. All rights reserved.</p>
+                        <p className="copy">&copy; {new Date().getFullYear()} STMARKET Inc. All rights reserved.</p>
                     </div>
                     <div className="footer-right">
                         <div className="link-group">
                             <h4>Legal</h4>
-                            <span>Terms of Service</span>
-                            <span>Privacy Policy</span>
-                            <span>Refund Policy</span>
+                            <span onClick={() => navigate('/privacy')}>Terms of Service</span>
+                            <span onClick={() => navigate('/privacy')}>Privacy Policy</span>
+                            <span onClick={() => navigate('/privacy')}>Refund Policy</span>
                         </div>
                         <div className="link-group">
                             <h4>Support</h4>
-                            <span>Contact Us</span>
-                            <span>FAQ</span>
-                            <span>Status</span>
+                            <span onClick={() => navigate('/support')}>Contact Us</span>
+                            <span onClick={() => navigate('/support')}>FAQ</span>
+                            <span onClick={() => navigate('/support')}>Status</span>
                         </div>
                     </div>
                 </div>
@@ -232,6 +257,8 @@ const Dashboard = () => {
                 .brand { font-weight: 800; font-size: 15px; }
                 .brand.visa { color: #4361ee; }
                 .brand.mastercard { color: #ef233c; }
+                .brand.amex { color: #0077b6; }
+                .brand.discover { color: #f97316; }
 
                 .type-pill {
                     font-size: 10px; background: #222; color: #aaa;

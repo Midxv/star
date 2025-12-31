@@ -18,6 +18,9 @@ const Sidebar = ({ isOpen, onClose }) => {
         if (onClose) onClose();
     };
 
+    // Helper for active class
+    const isActive = (path) => location.pathname === path ? 'active' : '';
+
     return (
         <>
             <div
@@ -28,48 +31,70 @@ const Sidebar = ({ isOpen, onClose }) => {
             <aside className={`sidebar ${isOpen ? "open" : ""}`}>
 
                 <div className="sidebar-header">
-                    <span className="user-email">{auth.currentUser?.email?.split('@')[0]}</span>
+                    {/* Username Block Red & Block Letters */}
+                    <span className="user-email">
+                        {auth.currentUser?.email?.split('@')[0].toUpperCase()}
+                    </span>
                     <button className="close-btn" onClick={onClose}>
                         <X size={24} />
                     </button>
                 </div>
 
                 <nav className="sidebar-nav">
-                    {/* 1. MARKET (Top) */}
+                    {/* 1. MARKET */}
                     <button
-                        className={`side-btn ${location.pathname === '/' ? 'active' : ''}`}
+                        className={`side-btn ${isActive('/')}`}
                         onClick={() => handleNavigation('/')}
                     >
                         <ShoppingCart size={18} /> Market
                     </button>
 
-                    {/* 2. INVENTORY (Middle) - Points to new Assets page */}
+                    {/* 2. INVENTORY (Linked to /assets) */}
                     <button
-                        className={`side-btn ${location.pathname === '/assets' ? 'active' : ''}`}
+                        className={`side-btn ${isActive('/assets')}`}
                         onClick={() => handleNavigation('/assets')}
                     >
                         <Box size={18} /> Inventory
                     </button>
 
-                    {/* 3. WALLET (Bottom) */}
+                    {/* 3. WALLET */}
                     <button
-                        className={`side-btn ${location.pathname === '/wallet' ? 'active' : ''}`}
+                        className={`side-btn ${isActive('/wallet')}`}
                         onClick={() => handleNavigation('/wallet')}
                     >
                         <WalletIcon size={18} /> Wallet
                     </button>
                 </nav>
 
+                {/* INFO PAGES */}
                 <nav className="sidebar-nav secondary">
-                    <button className="side-btn small"><HelpCircle size={16} /> Support</button>
-                    <button className="side-btn small"><Info size={16} /> About</button>
-                    <button className="side-btn small"><Shield size={16} /> Privacy Policy</button>
+                    <button
+                        className={`side-btn small ${isActive('/support')}`}
+                        onClick={() => handleNavigation('/support')}
+                    >
+                        <HelpCircle size={16} /> Support
+                    </button>
+
+                    <button
+                        className={`side-btn small ${isActive('/about')}`}
+                        onClick={() => handleNavigation('/about')}
+                    >
+                        <Info size={16} /> About
+                    </button>
+
+                    <button
+                        className={`side-btn small ${isActive('/privacy')}`}
+                        onClick={() => handleNavigation('/privacy')}
+                    >
+                        <Shield size={16} /> Privacy Policy
+                    </button>
                 </nav>
 
                 <div className="spacer"></div>
 
+                {/* LOGOUT BUTTON */}
                 <button className="disconnect-btn" onClick={handleLogout}>
-                    <LogOut size={18} /> Disconnect System
+                    <LogOut size={18} /> Logout
                 </button>
             </aside>
 
@@ -95,7 +120,13 @@ const Sidebar = ({ isOpen, onClose }) => {
                     display: flex; justify-content: space-between; align-items: center;
                     margin-bottom: 30px; padding-bottom: 20px; border-bottom: 1px solid #1a1a1a;
                 }
-                .user-email { font-family: 'JetBrains Mono', monospace; color: #fff; font-size: 12px; opacity: 0.5; }
+                .user-email {
+                    font-family: 'JetBrains Mono', monospace;
+                    color: #ff2a2a; /* RED */
+                    font-size: 16px;
+                    font-weight: 800; /* BLOCK LETTERS */
+                    letter-spacing: 1px;
+                }
                 .close-btn { background: none; border: none; color: #fff; cursor: pointer; }
 
                 .sidebar-nav { display: flex; flex-direction: column; gap: 8px; }
