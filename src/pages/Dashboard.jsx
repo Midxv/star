@@ -182,7 +182,7 @@ const Dashboard = () => {
                 <div className="footer-content">
                     <div className="footer-left">
                         <h3>STMARKET.</h3>
-                        <p>The premium marketplace for verified digital assets.</p>
+                        <p>The Best Marketplace for you.</p>
                         <p className="copy">&copy; {new Date().getFullYear()} STMARKET Inc. All rights reserved.</p>
                     </div>
                     <div className="footer-right">

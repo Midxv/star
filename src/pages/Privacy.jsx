@@ -25,7 +25,7 @@ const Privacy = () => {
                     <p>We utilize privacy-focused analytics that do not track user behavior across other sites. Your browsing habits on StarCard remain confidential and are not sold to third-party advertisers.</p>
 
                     <h3>4. Security of Funds</h3>
-                    <p>Wallet balances are stored in a secure, encrypted database. While we implement industry-standard security measures, user are advised to enable 2FA where available and use unique passwords.</p>
+                    <p>Wallet balances are stored in a secure, encrypted database. While we implement industry-standard security measures, user are advised to enable 2FA where available and use unique passwords. And we have NO RETURN POLICY ONCE ORDER IS PLACED</p>
 
                     <h3>5. Changes to This Policy</h3>
                     <p>We may update our Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page.</p>
