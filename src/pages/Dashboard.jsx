@@ -1,37 +1,38 @@
+// src/pages/Dashboard.jsx
 import React, { useState, useEffect } from "react";
-import { onSnapshot, doc, updateDoc, getDoc } from "firebase/firestore";
+import { onSnapshot, doc } from "firebase/firestore";
 import { db, auth } from "../firebaseConfig";
 import Sidebar from "../components/Sidebar";
 import Header from "../components/Header";
 import { Shield, Globe, CreditCard, Hash, Check, XCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
-// Initial Static Data for Live Cards (We will add prices dynamically)
+// Initial Static Data for Live Cards (Authentic BINs, No Debit)
 const initialLiveCards = [
-    { id: 1, brand: 'VISA', type: 'PLATINUM', country: 'USA', bin: '414720' },
-    { id: 2, brand: 'MASTERCARD', type: 'WORLD', country: 'UK', bin: '510510' },
-    { id: 3, brand: 'VISA', type: 'SIGNATURE', country: 'FRANCE', bin: '453201' },
-    { id: 4, brand: 'MASTERCARD', type: 'GOLD', country: 'GERMANY', bin: '542418' },
-    { id: 5, brand: 'VISA', type: 'BUSINESS', country: 'USA', bin: '491600' },
-    { id: 6, brand: 'MASTERCARD', type: 'STANDARD', country: 'ITALY', bin: '520000' },
-    { id: 7, brand: 'VISA', type: 'INFINITE', country: 'USA', bin: '400022' },
-    { id: 8, brand: 'MASTERCARD', type: 'WORLD ELITE', country: 'NETHERLANDS', bin: '535310' },
-    { id: 9, brand: 'VISA', type: 'DEBIT', country: 'SPAIN', bin: '455622' },
-    { id: 10, brand: 'VISA', type: 'CREDIT', country: 'USA', bin: '414740' },
-    { id: 11, brand: 'MASTERCARD', type: 'PLATINUM', country: 'SWEDEN', bin: '552233' },
-    { id: 12, brand: 'VISA', type: 'CLASSIC', country: 'POLAND', bin: '402400' },
-    { id: 13, brand: 'MASTERCARD', type: 'TITANIUM', country: 'USA', bin: '512120' },
+    { id: 1, brand: 'VISA', type: 'PLATINUM', country: 'USA', bin: '400022' },
+    { id: 2, brand: 'MASTERCARD', type: 'WORLD', country: 'UK', bin: '550000' },
+    { id: 3, brand: 'VISA', type: 'SIGNATURE', country: 'FRANCE', bin: '497010' },
+    { id: 4, brand: 'MASTERCARD', type: 'GOLD', country: 'GERMANY', bin: '510000' },
+    { id: 5, brand: 'VISA', type: 'BUSINESS', country: 'USA', bin: '403600' },
+    { id: 6, brand: 'MASTERCARD', type: 'STANDARD', country: 'ITALY', bin: '535500' },
+    { id: 7, brand: 'VISA', type: 'INFINITE', country: 'USA', bin: '448500' },
+    { id: 8, brand: 'MASTERCARD', type: 'WORLD ELITE', country: 'NETHERLANDS', bin: '522200' },
+    { id: 9, brand: 'VISA', type: 'PLATINUM', country: 'SPAIN', bin: '491600' },
+    { id: 10, brand: 'VISA', type: 'CREDIT', country: 'USA', bin: '414720' },
+    { id: 11, brand: 'MASTERCARD', type: 'PLATINUM', country: 'SWEDEN', bin: '557700' },
+    { id: 12, brand: 'VISA', type: 'CLASSIC', country: 'POLAND', bin: '450000' },
+    { id: 13, brand: 'MASTERCARD', type: 'TITANIUM', country: 'USA', bin: '546600' },
 ];
 
-// Out of Stock Cards (Static)
+// Out of Stock Cards (Visa/Master Only - No Amex/Discover)
 const outOfStockCards = [
-    { id: 101, brand: 'AMEX', type: 'CENTURION', country: 'USA', bin: '371288' },
-    { id: 102, brand: 'DISCOVER', type: 'CREDIT', country: 'USA', bin: '601100' },
-    { id: 103, brand: 'AMEX', type: 'GOLD', country: 'UK', bin: '374210' },
-    { id: 104, brand: 'DISCOVER', type: 'DEBIT', country: 'USA', bin: '601120' },
-    { id: 105, brand: 'AMEX', type: 'PLATINUM', country: 'FRANCE', bin: '379000' },
-    { id: 106, brand: 'DISCOVER', type: 'BUSINESS', country: 'USA', bin: '650000' },
-    { id: 107, brand: 'AMEX', type: 'BLUE', country: 'GERMANY', bin: '375000' },
+    { id: 101, brand: 'VISA', type: 'SIGNATURE', country: 'USA', bin: '401200' },
+    { id: 102, brand: 'MASTERCARD', type: 'WORLD', country: 'USA', bin: '540000' },
+    { id: 103, brand: 'VISA', type: 'GOLD', country: 'UK', bin: '465800' },
+    { id: 104, brand: 'MASTERCARD', type: 'BUSINESS', country: 'USA', bin: '558800' },
+    { id: 105, brand: 'VISA', type: 'PLATINUM', country: 'FRANCE', bin: '497100' },
+    { id: 106, brand: 'MASTERCARD', type: 'GOLD', country: 'USA', bin: '520010' },
+    { id: 107, brand: 'VISA', type: 'INFINITE', country: 'GERMANY', bin: '400010' },
 ];
 
 const Dashboard = () => {
@@ -76,7 +77,6 @@ const Dashboard = () => {
 
         if (existingItem) {
             existingItem.qty += 1;
-            // Update the cart item price to the current live price
             existingItem.price = item.price;
         } else {
             currentCart.push({ ...item, qty: 1 });
@@ -87,7 +87,6 @@ const Dashboard = () => {
 
         setAddedItemId(item.id);
 
-        // Redirect to Cart
         setTimeout(() => {
             setAddedItemId(null);
             navigate('/cart');
@@ -127,7 +126,7 @@ const Dashboard = () => {
                                 </td>
                                 <td>{item.country}</td>
                                 <td className="mono">{item.bin}</td>
-                                <td className="price">${item.price}</td>
+                                <td className="price">€{item.price}</td>
                                 <td>
                                     <button
                                         className={`buy-pill-btn glow-green ${addedItemId === item.id ? 'added' : ''}`}
@@ -204,14 +203,14 @@ const Dashboard = () => {
 
             <style jsx>{`
                 .market-container { max-width: 1200px; margin: 40px auto; padding: 0 20px; min-height: 80vh; }
-                
+
                 .section-title {
                     color: white; margin-bottom: 20px; font-size: 32px;
                     font-weight: 800; letter-spacing: -1px; display: flex; align-items: center; gap: 12px;
                 }
-                .live-dot { 
-                    width: 12px; height: 12px; background: #00ff88; border-radius: 50%; 
-                    box-shadow: 0 0 15px #00ff88; animation: pulse 2s infinite; 
+                .live-dot {
+                    width: 12px; height: 12px; background: #00ff88; border-radius: 50%;
+                    box-shadow: 0 0 15px #00ff88; animation: pulse 2s infinite;
                 }
                 @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
 
@@ -249,7 +248,7 @@ const Dashboard = () => {
                 .row-pill td:last-child { border-top-right-radius: 50px; border-bottom-right-radius: 50px; border-right: 1px solid #1a1a1a; }
 
                 .row-pill:hover td { background: #151515; transform: translateY(-2px); border-color: #333; }
-                
+
                 /* Disabled Row Style */
                 .row-pill.disabled td { background: #080808; border-color: #151515; color: #555; }
                 .row-pill.disabled:hover td { transform: none; background: #080808; }
@@ -267,7 +266,7 @@ const Dashboard = () => {
 
                 .mono { font-family: 'JetBrains Mono', monospace; color: #888; }
                 .price { color: #fff; font-weight: 800; font-family: 'JetBrains Mono', monospace; font-size: 16px; }
-                
+
                 .status-sold-out { color: #ef233c; font-weight: 800; font-size: 12px; letter-spacing: 1px; display: flex; align-items: center; }
 
                 /* GLOWING BUY BUTTON */
@@ -293,7 +292,7 @@ const Dashboard = () => {
                 /* FOOTER */
                 .footer { border-top: 1px solid #222; background: #0a0a0a; padding: 60px 20px; margin-top: 80px; }
                 .footer-content { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 40px; }
-                
+
                 .footer-left h3 { font-size: 24px; font-weight: 900; color: white; margin-bottom: 10px; }
                 .footer-left h3 span { color: #ef233c; }
                 .footer-left p { color: #666; font-size: 14px; margin-bottom: 5px; }
