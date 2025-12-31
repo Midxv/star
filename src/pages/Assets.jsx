@@ -1,10 +1,9 @@
-// src/pages/Assets.jsx
 import React, { useState, useEffect } from "react";
-import { collection, onSnapshot, query, where, doc } from "firebase/firestore"; // Added 'where'
+import { collection, onSnapshot, query, where, doc } from "firebase/firestore";
 import { db, auth } from "../firebaseConfig";
 import Sidebar from "../components/Sidebar";
 import Header from "../components/Header";
-import { Shield, Globe, CreditCard, Hash, Activity, PackageOpen } from 'lucide-react';
+import { Shield, Globe, CreditCard, Hash, Activity, PackageOpen, AlertTriangle } from 'lucide-react';
 
 const Assets = () => {
     const [balance, setBalance] = useState(0.00);
@@ -43,6 +42,18 @@ const Assets = () => {
             <Header onOpenSidebar={() => setSidebarOpen(!isSidebarOpen)} />
 
             <main className="assets-container">
+
+                {/* --- RED BANNER NOTICE (Only if orders exist) --- */}
+                {orders.length > 0 && (
+                    <div className="delay-banner">
+                        <AlertTriangle size={20} />
+                        <p>
+                            <strong>Notice:</strong> Due to high demand, product delivery is currently delayed.
+                            Items will be delivered within 48 hours or an automatic refund will be processed.
+                        </p>
+                    </div>
+                )}
+
                 <h1 className="page-title">My Inventory</h1>
 
                 {orders.length === 0 ? (
@@ -95,6 +106,24 @@ const Assets = () => {
             <style jsx>{`
                 .page-wrapper { background: #050505; min-height: 100vh; color: white; }
                 .assets-container { max-width: 1200px; margin: 40px auto; padding: 0 20px; }
+
+                /* BANNER STYLES */
+                .delay-banner {
+                    background: rgba(239, 68, 68, 0.1);
+                    border: 1px solid rgba(239, 68, 68, 0.3);
+                    color: #ef4444;
+                    padding: 15px 20px;
+                    border-radius: 12px;
+                    display: flex;
+                    align-items: center;
+                    gap: 15px;
+                    margin-bottom: 30px;
+                    animation: slideDown 0.5s ease-out;
+                }
+                .delay-banner strong { font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; }
+                .delay-banner p { margin: 0; font-size: 14px; line-height: 1.5; }
+
+                @keyframes slideDown { from { transform: translateY(-10px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
                 .page-title {
                     color: white; margin-bottom: 30px; font-size: 32px;
