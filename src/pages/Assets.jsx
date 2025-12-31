@@ -1,5 +1,6 @@
+// src/pages/Assets.jsx
 import React, { useState, useEffect } from "react";
-import { collection, onSnapshot, query, orderBy, doc } from "firebase/firestore";
+import { collection, onSnapshot, query, where, doc } from "firebase/firestore"; // Added 'where'
 import { db, auth } from "../firebaseConfig";
 import Sidebar from "../components/Sidebar";
 import Header from "../components/Header";
@@ -18,17 +19,17 @@ const Assets = () => {
                 if (doc.exists()) setBalance(doc.data().balance);
             });
 
-            // 2. Fetch Orders (Assets) - Ordered by newest first
-            // Note: If 'date' field exists in your Cart.jsx logic, we sort by it.
-            // If not, it defaults to natural order.
-            const q = query(collection(db, "users", user.uid, "orders"));
+            // 2. Fetch Orders (Assets) - ONLY fetch purchased items
+            const ordersRef = collection(db, "users", user.uid, "orders");
+
+            // --- THE FIX: Filter by isPurchased == true ---
+            const q = query(ordersRef, where("isPurchased", "==", true));
 
             const unsubOrders = onSnapshot(q, (snapshot) => {
                 const fetchedOrders = snapshot.docs.map(doc => ({
                     id: doc.id,
                     ...doc.data()
                 }));
-                // Sort client-side if needed, or use orderBy in query if indexes exist
                 setOrders(fetchedOrders);
             });
 
@@ -94,9 +95,9 @@ const Assets = () => {
             <style jsx>{`
                 .page-wrapper { background: #050505; min-height: 100vh; color: white; }
                 .assets-container { max-width: 1200px; margin: 40px auto; padding: 0 20px; }
-                
-                .page-title { 
-                    color: white; margin-bottom: 30px; font-size: 32px; 
+
+                .page-title {
+                    color: white; margin-bottom: 30px; font-size: 32px;
                     font-weight: 800; letter-spacing: -1px;
                 }
 
