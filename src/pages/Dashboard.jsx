@@ -13,7 +13,7 @@ const initialLiveCards = [
     { id: 2, brand: 'MASTERCARD', type: 'WORLD', country: 'UK', bin: '530408' },
     { id: 3, brand: 'VISA', type: 'SIGNATURE', country: 'FRANCE', bin: '497010' },
     { id: 4, brand: 'MASTERCARD', type: 'GOLD', country: 'GERMANY', bin: '510900' },
-    { id: 5, brand: 'VISA', type: 'BUSINESS', country: 'USA', bin: '403600' },
+    { id: 5, brand: 'VISA', type: 'PLATINUM', country: 'FRANCE', bin: '403600' },
     { id: 6, brand: 'MASTERCARD', type: 'STANDARD', country: 'ITALY', bin: '539500' },
     { id: 7, brand: 'VISA', type: 'INFINITE', country: 'USA', bin: '448500' },
     { id: 8, brand: 'MASTERCARD', type: 'WORLD ELITE', country: 'NETHERLANDS', bin: '526290' },
