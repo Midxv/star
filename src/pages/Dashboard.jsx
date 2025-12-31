@@ -1,10 +1,38 @@
 import React, { useState, useEffect } from "react";
-import { onSnapshot, doc } from "firebase/firestore";
+import { onSnapshot, doc, updateDoc, getDoc } from "firebase/firestore";
 import { db, auth } from "../firebaseConfig";
 import Sidebar from "../components/Sidebar";
 import Header from "../components/Header";
 import { Shield, Globe, CreditCard, Hash, Check, XCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+
+// Initial Static Data for Live Cards (We will add prices dynamically)
+const initialLiveCards = [
+    { id: 1, brand: 'VISA', type: 'PLATINUM', country: 'USA', bin: '414720' },
+    { id: 2, brand: 'MASTERCARD', type: 'WORLD', country: 'UK', bin: '510510' },
+    { id: 3, brand: 'VISA', type: 'SIGNATURE', country: 'FRANCE', bin: '453201' },
+    { id: 4, brand: 'MASTERCARD', type: 'GOLD', country: 'GERMANY', bin: '542418' },
+    { id: 5, brand: 'VISA', type: 'BUSINESS', country: 'USA', bin: '491600' },
+    { id: 6, brand: 'MASTERCARD', type: 'STANDARD', country: 'ITALY', bin: '520000' },
+    { id: 7, brand: 'VISA', type: 'INFINITE', country: 'USA', bin: '400022' },
+    { id: 8, brand: 'MASTERCARD', type: 'WORLD ELITE', country: 'NETHERLANDS', bin: '535310' },
+    { id: 9, brand: 'VISA', type: 'DEBIT', country: 'SPAIN', bin: '455622' },
+    { id: 10, brand: 'VISA', type: 'CREDIT', country: 'USA', bin: '414740' },
+    { id: 11, brand: 'MASTERCARD', type: 'PLATINUM', country: 'SWEDEN', bin: '552233' },
+    { id: 12, brand: 'VISA', type: 'CLASSIC', country: 'POLAND', bin: '402400' },
+    { id: 13, brand: 'MASTERCARD', type: 'TITANIUM', country: 'USA', bin: '512120' },
+];
+
+// Out of Stock Cards (Static)
+const outOfStockCards = [
+    { id: 101, brand: 'AMEX', type: 'CENTURION', country: 'USA', bin: '371288' },
+    { id: 102, brand: 'DISCOVER', type: 'CREDIT', country: 'USA', bin: '601100' },
+    { id: 103, brand: 'AMEX', type: 'GOLD', country: 'UK', bin: '374210' },
+    { id: 104, brand: 'DISCOVER', type: 'DEBIT', country: 'USA', bin: '601120' },
+    { id: 105, brand: 'AMEX', type: 'PLATINUM', country: 'FRANCE', bin: '379000' },
+    { id: 106, brand: 'DISCOVER', type: 'BUSINESS', country: 'USA', bin: '650000' },
+    { id: 107, brand: 'AMEX', type: 'BLUE', country: 'GERMANY', bin: '375000' },
+];
 
 const Dashboard = () => {
     const navigate = useNavigate();
@@ -12,8 +40,8 @@ const Dashboard = () => {
     const [isSidebarOpen, setSidebarOpen] = useState(false);
     const [addedItemId, setAddedItemId] = useState(null);
 
-    // Dynamic Pricing State
-    const [dynamicPrice, setDynamicPrice] = useState("1.85");
+    // State to hold Live Cards with their unique prices
+    const [liveInventory, setLiveInventory] = useState(initialLiveCards);
 
     // --- 1. REAL-TIME BALANCE ---
     useEffect(() => {
@@ -25,33 +53,33 @@ const Dashboard = () => {
         }
     }, []);
 
-    // --- 2. DYNAMIC PRICING (Updates every 15 mins) ---
+    // --- 2. UNIQUE DYNAMIC PRICING (Every 15 mins) ---
     useEffect(() => {
-        const updatePrice = () => {
-            // Random price between 1.47 and 2.13
-            const price = (Math.random() * (2.13 - 1.47) + 1.47).toFixed(2);
-            setDynamicPrice(price);
+        const updatePrices = () => {
+            const updatedCards = initialLiveCards.map(card => {
+                // Generate a unique random price for each card between 1.47 and 2.13
+                const randomPrice = (Math.random() * (2.13 - 1.47) + 1.47).toFixed(2);
+                return { ...card, price: randomPrice };
+            });
+            setLiveInventory(updatedCards);
         };
 
-        updatePrice(); // Run on mount
-        const interval = setInterval(updatePrice, 15 * 60 * 1000);
+        updatePrices(); // Initial run
+        const interval = setInterval(updatePrices, 15 * 60 * 1000); // 15 mins
         return () => clearInterval(interval);
     }, []);
 
-    // --- 3. ADD TO CART LOGIC (Redirects to Cart) ---
+    // --- 3. ADD TO CART LOGIC ---
     const addToCart = (item) => {
-        // Create a cart item with the current dynamic price
-        const itemToAdd = { ...item, price: dynamicPrice };
-
         const currentCart = JSON.parse(localStorage.getItem('myCart') || '[]');
         const existingItem = currentCart.find(cartItem => cartItem.id === item.id);
 
         if (existingItem) {
             existingItem.qty += 1;
-            // Update price to current live price
-            existingItem.price = dynamicPrice;
+            // Update the cart item price to the current live price
+            existingItem.price = item.price;
         } else {
-            currentCart.push({ ...itemToAdd, qty: 1 });
+            currentCart.push({ ...item, qty: 1 });
         }
 
         localStorage.setItem('myCart', JSON.stringify(currentCart));
@@ -59,40 +87,12 @@ const Dashboard = () => {
 
         setAddedItemId(item.id);
 
-        // Redirect to Cart after short delay
+        // Redirect to Cart
         setTimeout(() => {
             setAddedItemId(null);
             navigate('/cart');
         }, 500);
     };
-
-    // --- LIVE CARDS (13 Items - Visa/Master Only) ---
-    const liveCards = [
-        { id: 1, brand: 'VISA', type: 'PLATINUM', country: 'USA', bin: '414720' },
-        { id: 2, brand: 'MASTERCARD', type: 'WORLD', country: 'UK', bin: '510510' },
-        { id: 3, brand: 'VISA', type: 'SIGNATURE', country: 'FRANCE', bin: '453201' },
-        { id: 4, brand: 'MASTERCARD', type: 'GOLD', country: 'GERMANY', bin: '542418' },
-        { id: 5, brand: 'VISA', type: 'BUSINESS', country: 'USA', bin: '491600' },
-        { id: 6, brand: 'MASTERCARD', type: 'STANDARD', country: 'ITALY', bin: '520000' },
-        { id: 7, brand: 'VISA', type: 'INFINITE', country: 'USA', bin: '400022' },
-        { id: 8, brand: 'MASTERCARD', type: 'WORLD ELITE', country: 'NETHERLANDS', bin: '535310' },
-        { id: 9, brand: 'VISA', type: 'DEBIT', country: 'SPAIN', bin: '455622' },
-        { id: 10, brand: 'VISA', type: 'CREDIT', country: 'USA', bin: '414740' },
-        { id: 11, brand: 'MASTERCARD', type: 'PLATINUM', country: 'SWEDEN', bin: '552233' },
-        { id: 12, brand: 'VISA', type: 'CLASSIC', country: 'POLAND', bin: '402400' },
-        { id: 13, brand: 'MASTERCARD', type: 'TITANIUM', country: 'USA', bin: '512120' },
-    ];
-
-    // --- OUT OF STOCK CARDS (7 Items - Amex/Discover Only) ---
-    const outOfStockCards = [
-        { id: 101, brand: 'AMEX', type: 'CENTURION', country: 'USA', bin: '371288' },
-        { id: 102, brand: 'DISCOVER', type: 'CREDIT', country: 'USA', bin: '601100' },
-        { id: 103, brand: 'AMEX', type: 'GOLD', country: 'UK', bin: '374210' },
-        { id: 104, brand: 'DISCOVER', type: 'DEBIT', country: 'USA', bin: '601120' },
-        { id: 105, brand: 'AMEX', type: 'PLATINUM', country: 'FRANCE', bin: '379000' },
-        { id: 106, brand: 'DISCOVER', type: 'BUSINESS', country: 'USA', bin: '650000' },
-        { id: 107, brand: 'AMEX', type: 'BLUE', country: 'GERMANY', bin: '375000' },
-    ];
 
     return (
         <>
@@ -119,7 +119,7 @@ const Dashboard = () => {
                         </tr>
                         </thead>
                         <tbody>
-                        {liveCards.map((item) => (
+                        {liveInventory.map((item) => (
                             <tr key={item.id} className="row-pill">
                                 <td className={`brand ${item.brand.toLowerCase()}`}>{item.brand}</td>
                                 <td>
@@ -127,7 +127,7 @@ const Dashboard = () => {
                                 </td>
                                 <td>{item.country}</td>
                                 <td className="mono">{item.bin}</td>
-                                <td className="price">${dynamicPrice}</td>
+                                <td className="price">${item.price}</td>
                                 <td>
                                     <button
                                         className={`buy-pill-btn glow-green ${addedItemId === item.id ? 'added' : ''}`}

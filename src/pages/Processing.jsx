@@ -74,7 +74,7 @@ const Processing = () => {
                 </div>
 
                 <h1 className="amount-display">
-                    Send <span className="highlight">${amount}</span>
+                    Send <span className="highlight">€{amount}</span>
                 </h1>
                 <p className="subtitle">via {cryptoStr} Network</p>
 

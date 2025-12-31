@@ -71,7 +71,7 @@ const Wallet = () => {
 
         // --- Validation ---
         if (isNaN(val) || val < 30) {
-            setErrorMsg("Minimum deposit amount is $30.00");
+            setErrorMsg("Minimum deposit amount is €30.00");
             setShowErrorToast(true);
             setTimeout(() => setShowErrorToast(false), 4000);
             return;
@@ -145,7 +145,7 @@ const Wallet = () => {
                 <div className="balance-section">
                     <div className="balance-display">
                         <span className="label">Total Balance</span>
-                        <h1>${balance ? balance.toFixed(2) : '0.00'}</h1>
+                        <h1>€{balance ? balance.toFixed(2) : '0.00'}</h1>
                     </div>
                     <div className="balance-icon">
                         <WalletIcon size={48} color="#FF3B30" />
@@ -162,7 +162,7 @@ const Wallet = () => {
                     <div className="input-block">
                         <label>Amount (USD)</label>
                         <div className="currency-input">
-                            <span className="symbol">$</span>
+                            <span className="symbol">€</span>
                             <input
                                 type="number"
                                 placeholder="0.00"
@@ -214,7 +214,7 @@ const Wallet = () => {
                                         </div>
                                     </div>
                                     <div className="tx-right">
-                                        <span className="tx-amount">+${tx.amount}</span>
+                                        <span className="tx-amount">+€{tx.amount}</span>
                                         {getStatusBadge(tx.status)}
                                     </div>
                                 </div>
