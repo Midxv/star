@@ -6,7 +6,7 @@ import { Mail, Copy, Check } from 'lucide-react';
 const Support = () => {
     const [isSidebarOpen, setSidebarOpen] = useState(false);
     const [copied, setCopied] = useState(false);
-    const supportEmail = "marketsupport@tuta.io"; // Fake Darkweb Mail
+    const supportEmail = "help@mtmarket.sbs"; // Fake Darkweb Mail
 
     const handleCopy = () => {
         navigator.clipboard.writeText(supportEmail);
