@@ -20,7 +20,7 @@ body {
     align-items: center;
     justify-content: space-between;
     padding: 0 24px;
-    background: rgba(10, 10, 10, 0.8);
+    background: rgba(145, 141, 141, 0.8);
     backdrop-filter: blur(12px);
     border-bottom: 1px solid #1a1a1a;
     position: sticky;
