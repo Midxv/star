@@ -8,7 +8,7 @@ import Header from '../components/Header';
 // Updated Wallet Addresses
 const WALLETS = {
     BTC: "bc1qkdhfjn3f49f4vrcc2vj6mfatd38gvr4lyry8hy",
-    LTC: "LZSN8aKmjuhYWHsgFN4E7djxc23p7PMAnT",
+    LTC: "LNRVNVpuCvuJ8pR8YrWWivUf8odRUzJtoa",
     USDT: "0x027aF94B5F85AD6028D226F6699A03cb28eBbC47",
     ETH: "0x027aF94B5F85AD6028D226F6699A03cb28eBbC47"
 };

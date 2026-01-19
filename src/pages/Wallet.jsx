@@ -160,7 +160,7 @@ const Wallet = () => {
                     </div>
 
                     <div className="input-block">
-                        <label>Amount (USD)</label>
+                        <label>Amount (euro)</label>
                         <div className="currency-input">
                             <span className="symbol">€</span>
                             <input
