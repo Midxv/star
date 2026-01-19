@@ -27,7 +27,7 @@ const Header = ({ onOpenSidebar }) => {
 
             <div className="nav-center">
                 <Link to="/" className="logo">
-                    MasTr<span className="blink">MARKET</span>
+                    MT<span className="blink">MARKET</span>
                 </Link>
             </div>
 
