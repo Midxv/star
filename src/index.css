@@ -139,7 +139,7 @@ body {
 
 /* --- PRO CARDS --- */
 .cc-card {
-    background: linear-gradient(160deg, #121212 0%, #050505 100%);
+    background: linear-gradient(160deg, #302e2e 0%, #302e2e 100%);
     border-radius: 16px;
     padding: 24px;
     border: 1px solid #1f1f1f;
