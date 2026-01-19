@@ -13,7 +13,7 @@ const LoadingScreen = () => {
                 .loader-container {
                     position: fixed;
                     top: 0; left: 0; width: 100vw; height: 100vh;
-                    background: #000;
+                    background: #01362F;
                     z-index: 9999;
                     display: flex; align-items: center; justify-content: center;
                 }
