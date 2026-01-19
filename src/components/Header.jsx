@@ -46,42 +46,109 @@ const Header = ({ onOpenSidebar }) => {
                     border-bottom: 1px solid #1a1a1a;
                     background: rgba(5, 5, 5, 0.95);
                     backdrop-filter: blur(10px);
-                    position: sticky; top: 0; z-index: 1000;
-                    display: grid; grid-template-columns: 1fr auto 1fr;
-                    align-items: center; padding: 0 30px;
+                    position: sticky;
+                    top: 0;
+                    z-index: 1000;
+                    display: grid;
+                    grid-template-columns: 1fr auto 1fr;
+                    align-items: center;
+                    padding: 0 30px;
                 }
 
-                .nav-left { display: flex; justify-content: flex-start; }
-                .nav-center { display: flex; justify-content: center; }
-                .nav-right { display: flex; justify-content: flex-end; align-items: center; gap: 20px; }
+                .nav-left {
+                    display: flex;
+                    justify-content: flex-start;
+                }
+
+                .nav-center {
+                    display: flex;
+                    justify-content: center;
+                }
+
+                .nav-right {
+                    display: flex;
+                    justify-content: flex-end;
+                    align-items: center;
+                    gap: 20px;
+                }
 
                 .logo {
                     font-family: 'JetBrains Mono', monospace;
-                    font-size: 32px; font-weight: 800; color: white;
-                    text-decoration: none; letter-spacing: -2px;
+                    font-size: 32px;
+                    font-weight: 800;
+                    color: white;
+                    text-decoration: none;
+                    letter-spacing: -2px;
                     text-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
                     transition: 0.3s;
                 }
-                .logo:hover { text-shadow: 0 0 30px rgba(255, 42, 42, 0.6); color: #fff; }
 
-                .blink { color: #ff2a2a; animation: blinker 1s linear infinite; }
-                @keyframes blinker { 50% { opacity: 0; } }
+                .logo:hover {
+                    text-shadow: 0 0 30px rgba(255, 42, 42, 0.6);
+                    color: #fff;
+                }
 
-                .menu-btn, .icon-btn { background: none; border: none; cursor: pointer; transition: 0.2s; padding: 0; color: white; position: relative; }
-                .menu-btn:hover, .icon-btn:hover { transform: scale(1.1); color: #ff2a2a; }
+                .blink {
+                    color: #119990;
+                    animation: blinker 1s linear infinite;
+                }
+
+                @keyframes blinker {
+                    50% {
+                        opacity: 0;
+                    }
+                }
+
+                .menu-btn, .icon-btn {
+                    background: none;
+                    border: none;
+                    cursor: pointer;
+                    transition: 0.2s;
+                    padding: 0;
+                    color: white;
+                    position: relative;
+                }
+
+                .menu-btn:hover, .icon-btn:hover {
+                    transform: scale(1.1);
+                    color: #119990;
+                }
 
                 .cart-badge {
-                    position: absolute; top: -5px; right: -8px;
-                    background: #ff2a2a; color: white; font-size: 10px; font-weight: bold;
-                    width: 16px; height: 16px; border-radius: 50%;
-                    display: flex; align-items: center; justify-content: center;
+                    position: absolute;
+                    top: -5px;
+                    right: -8px;
+                    background: #119990;
+                    color: white;
+                    font-size: 10px;
+                    font-weight: bold;
+                    width: 16px;
+                    height: 16px;
+                    border-radius: 50%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
                     animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
                 }
-                @keyframes popIn { from { transform: scale(0); } to { transform: scale(1); } }
+
+                @keyframes popIn {
+                    from {
+                        transform: scale(0);
+                    }
+                    to {
+                        transform: scale(1);
+                    }
+                }
 
                 @media (max-width: 768px) {
-                    .navbar { padding: 0 15px; height: 70px; }
-                    .logo { font-size: 24px; }
+                    .navbar {
+                        padding: 0 15px;
+                        height: 70px;
+                    }
+
+                    .logo {
+                        font-size: 24px;
+                    }
                 }
             `}</style>
         </nav>
