@@ -70,8 +70,8 @@ const Wallet = () => {
         const val = parseFloat(amount);
 
         // --- Validation ---
-        if (isNaN(val) || val < 20) {
-            setErrorMsg("Minimum deposit amount is €20.00");
+        if (isNaN(val) || val < 30) {
+            setErrorMsg("Minimum deposit amount is €30.00");
             setShowErrorToast(true);
             setTimeout(() => setShowErrorToast(false), 4000);
             return;
